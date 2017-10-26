@@ -175,7 +175,10 @@ account or login locally:
 
 By the end of this section, you should be able to search Amazon products and
 add items to wishlists on your local machine (when your logged-in user is an
-admin or site manager).
+admin or site manager). *Note: if you're adding a new API endpoint, read more
+[here][API client README].*
+
+[API client README]: lib/amazon_product_api/README.md
 
 **This step is only required for site managers and admins searching/adding
 Amazon products.** If your issue doesn't involve working with the Amazon
