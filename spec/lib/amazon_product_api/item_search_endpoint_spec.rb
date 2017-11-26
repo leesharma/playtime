@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
 require 'amazon_product_api/item_search_endpoint'
+require 'support/helpers/amazon_helpers'
 
 describe AmazonProductAPI::ItemSearchEndpoint do
-  AWSTestCredentials = Struct.new(:access_key, :secret_key, :associate_tag)
-
   let(:aws_credentials) {
     AWSTestCredentials.new('aws_access_key',
                            'aws_secret_key',
