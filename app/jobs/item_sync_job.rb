@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'amazon_product_api'
 
 # This job is responsible for syncing items with Amazon.
@@ -32,11 +34,10 @@ class ItemSyncJob < ApplicationJob
     Rails.logger.info green("Syncing item #{item.id}: #{item.name}")
     update_hash = amazon_item!(item).update_hash
     item.assign_attributes(update_hash)
+    return unless item.changed?
 
-    if item.changed?
-      Rails.logger.info bold_green("Changed:\n") + item.changes.pretty_inspect
-      item.save!
-    end
+    Rails.logger.info bold_green("Changed:\n") + item.changes.pretty_inspect
+    item.save!
   end
 
   def amazon_item!(item)
