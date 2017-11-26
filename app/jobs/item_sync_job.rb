@@ -26,7 +26,7 @@ class ItemSyncJob < ApplicationJob
     # This is done in slices to avoid Amazon rate limits
     Item.all.each_slice(3) do |items|
       items.each { |item| sync! item }
-      sleep 2.seconds
+      sleep 2.seconds unless Rails.env.test?
     end
   end
 

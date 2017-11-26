@@ -22,3 +22,7 @@ Style/NumericLiterals:
 Style/BlockDelimiters:
   Exclude:
     - spec/**/*
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*
