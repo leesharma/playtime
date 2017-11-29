@@ -38,7 +38,6 @@ module AmazonProductAPI
     # Performs the search query and returns the processed response
     def response(http: HTTParty, logger: Rails.logger)
       response = parse_response get(http: http)
-      logger.debug response
       process_response(response)
     end
 
