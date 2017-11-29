@@ -11,17 +11,27 @@ module AmazonProductAPI
   # Contains all specialization logic for this endpoint including request
   # parameters, parameter validation, and response parsing.
   class ItemLookupEndpoint < Endpoint
-    def initialize(asin, aws_credentials)
-      @asin = asin
+    ASIN_LIMIT = 10 # max ASINs per request (from docs)
+
+    def initialize(*asins, aws_credentials)
+      validate_asin_count(asins)
+
+      @asins = asins
       @aws_credentials = aws_credentials
     end
 
     private
 
-    attr_reader :asin, :aws_credentials
+    attr_reader :asins, :aws_credentials
+
+    def validate_asin_count(asins)
+      return unless asins.count > ASIN_LIMIT
+      raise ArgumentError,
+            "Exceeded maximum ASIN limit: #{asins.length}/#{ASIN_LIMIT}"
+    end
 
     def process_response(response_hash)
-      LookupResponse.new(response_hash).item
+      LookupResponse.new(response_hash).items
     end
 
     # Other request parameters for ItemLookup can be found here:
@@ -32,7 +42,8 @@ module AmazonProductAPI
       {
         'Operation'       => 'ItemLookup',
         'ResponseGroup'   => 'ItemAttributes,Offers,Images',
-        'ItemId'          => asin.to_s
+        'IdType'          => 'ASIN',
+        'ItemId'          => asins.join(',')
       }
     end
   end

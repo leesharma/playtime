@@ -19,8 +19,8 @@ module AmazonProductAPI
       ItemSearchEndpoint.new(query, page, aws_credentials)
     end
 
-    def item_lookup(asin)
-      ItemLookupEndpoint.new(asin, aws_credentials)
+    def item_lookup(*asin)
+      ItemLookupEndpoint.new(*asin, aws_credentials)
     end
 
     private

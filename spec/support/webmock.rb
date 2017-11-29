@@ -14,7 +14,7 @@ RSpec.configure do |config|
                                   'Keywords'  => 'corgi'))
       .to_return(body: search_response)
 
-    # Item Lookup
+    # Single Item Lookup
 
     lookup_response = file_fixture('amazon_corgi_lookup_response.xml').read
 
@@ -27,5 +27,14 @@ RSpec.configure do |config|
       .with(query: hash_including('Operation' => 'ItemLookup',
                                   'ItemId'    => 'corgi_asin2'))
       .to_return(body: lookup_response)
+
+    # Dual Item Lookup
+
+    dual_lookup_response = file_fixture('amazon_dual_lookup_response.xml').read
+
+    stub_request(:get, 'webservices.amazon.com/onca/xml')
+      .with(query: hash_including('Operation' => 'ItemLookup',
+                                  'ItemId'    => 'corgi_asin,corgi_asin2'))
+      .to_return(body: dual_lookup_response)
   end
 end

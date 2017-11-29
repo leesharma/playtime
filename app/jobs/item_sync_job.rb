@@ -13,6 +13,10 @@ require 'amazon_product_api'
 class ItemSyncJob < ApplicationJob
   queue_as :default
 
+  def initialize
+    @client = AmazonProductAPI::HTTPClient.new
+  end
+
   # Syncs all items and writes the results to the log
   def perform(*_args)
     Rails.logger.info bold_green('Syncing all items')
@@ -21,6 +25,8 @@ class ItemSyncJob < ApplicationJob
   end
 
   private
+
+  attr_reader :client
 
   def sync_all!
     # This is done in slices to avoid Amazon rate limits
@@ -41,8 +47,7 @@ class ItemSyncJob < ApplicationJob
   end
 
   def amazon_item!(item)
-    client = AmazonProductAPI::HTTPClient.new
-    client.item_lookup(item.asin).response
+    client.item_lookup(item.asin).response.first
   end
 
   # Some styles for log text. This is so minor that it's not worth

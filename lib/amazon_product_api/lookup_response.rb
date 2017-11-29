@@ -10,34 +10,34 @@ module AmazonProductAPI
   # file to touch if the API response changes.
   class LookupResponse
     def initialize(response_hash)
-      @hash = item_hash_for response_hash
+      @response_hash = response_hash
     end
 
-    def item(item_class: SearchItem)
-      item_class.new(**item_attrs)
+    def items(item_class: SearchItem)
+      item_hashes.map { |hash| item_class.new(**item_attrs_from(hash)) }
     end
 
     private
 
-    attr_reader :hash
+    attr_reader :response_hash
 
-    def item_attrs
+    def item_attrs_from(hash)
       {
         asin: hash['ASIN'],
 
-        price_cents: hash.dig('ItemAttributes', 'ListPrice', 'Amount').to_i,
+        detail_page_url: hash['DetailPageURL'],
+        title:           hash['ItemAttributes']['Title'],
+        price_cents:     hash['ItemAttributes']['ListPrice']['Amount'].to_i,
 
-        image_url:    hash.dig('SmallImage', 'URL') || '',
-        image_width:  hash.dig('SmallImage', 'Width') || '',
-        image_height: hash.dig('SmallImage', 'Height') || '',
-
-        title:              hash.dig('ItemAttributes', 'Title'),
-        detail_page_url:    hash['DetailPageURL']
+        image_url:    hash.dig('SmallImage', 'URL')    || '',
+        image_width:  hash.dig('SmallImage', 'Width')  || '',
+        image_height: hash.dig('SmallImage', 'Height') || ''
       }
     end
 
-    def item_hash_for(response_hash)
-      response_hash.dig('ItemLookupResponse', 'Items', 'Item') || []
+    def item_hashes
+      items = response_hash.dig('ItemLookupResponse', 'Items', 'Item') || []
+      items.is_a?(Array) ? items : [items] # wrap "naked" response
     end
   end
 end
